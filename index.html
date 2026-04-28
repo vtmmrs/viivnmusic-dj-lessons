@@ -8,15 +8,21 @@
 <style>
   :root {
     --black: #080808;
+    --surface: #111110;
+    --surface2: #171614;
+    --border: #252320;
+    --border2: #1e1c1a;
     --off-white: #e8e3d8;
-    --warm-grey: #9a9488;
-    --dim: #3a3832;
+    --warm-grey: #8a857a;
+    --dim: #3a3630;
     --accent: #c8a96e;
-    --accent-dim: #7a6540;
+    --accent-hover: #d4b87a;
+    --accent-dim: #6a5830;
+    --success: #4a9e6e;
+    --error: #c05050;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
   body {
@@ -24,469 +30,392 @@
     color: var(--off-white);
     font-family: 'DM Mono', monospace;
     font-weight: 300;
+    font-size: 13px;
+    line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* Grain overlay */
-  body::before {
+  /* Subtle grain */
+  body::after {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
     pointer-events: none;
-    z-index: 100;
-    opacity: .5;
+    z-index: 999;
   }
 
-  .container {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 0 1.5rem; }
 
-  /* Header */
-  header {
-    padding: 3rem 0 0;
+  /* ── NAV ── */
+  nav {
+    padding: 2rem 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-
   .logo {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.1rem;
-    letter-spacing: .02em;
+    font-size: 1.15rem;
     color: var(--off-white);
     text-decoration: none;
+    letter-spacing: .01em;
   }
-
-  .logo span { color: var(--accent); }
-
-  .back-link {
+  .logo em { font-style: italic; color: var(--accent); }
+  .back {
     font-size: 10px;
-    letter-spacing: .12em;
+    letter-spacing: .14em;
     text-transform: uppercase;
     color: var(--warm-grey);
     text-decoration: none;
     transition: color .2s;
   }
-  .back-link:hover { color: var(--off-white); }
+  .back:hover { color: var(--off-white); }
 
-  /* Hero */
-  .hero {
-    padding: 4.5rem 0 3rem;
-  }
-
+  /* ── HERO ── */
+  .hero { padding: 4rem 0 2.5rem; }
   .eyebrow {
     font-size: 10px;
-    letter-spacing: .18em;
+    letter-spacing: .2em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.1rem;
   }
-
   h1 {
     font-family: 'Instrument Serif', serif;
-    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-size: clamp(2.6rem, 7vw, 4rem);
     font-weight: 400;
-    line-height: 1.05;
-    color: var(--off-white);
+    line-height: 1.0;
     margin-bottom: 1.5rem;
+    letter-spacing: -.01em;
   }
-
-  h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .hero-sub {
-    font-size: 13px;
+  h1 em { font-style: italic; color: var(--accent); }
+  .hero-body {
+    font-size: 12px;
     color: var(--warm-grey);
-    line-height: 1.8;
-    max-width: 480px;
-    margin-bottom: 2.5rem;
+    line-height: 1.85;
+    max-width: 500px;
   }
 
-  /* Stats bar */
+  /* ── STATS ── */
   .stats {
-    display: flex;
-    gap: 2.5rem;
-    padding: 1.5rem 0;
-    border-top: .5px solid var(--dim);
-    border-bottom: .5px solid var(--dim);
-    margin-bottom: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: .5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 2.5rem 0;
   }
-
-  .stat-num {
+  .stat {
+    padding: 1.25rem 1.5rem;
+    border-right: .5px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-n {
     font-family: 'Instrument Serif', serif;
-    font-size: 2rem;
-    color: var(--off-white);
+    font-size: 2.2rem;
     line-height: 1;
-    margin-bottom: .2rem;
+    color: var(--off-white);
+    margin-bottom: .25rem;
   }
-
-  .stat-label {
+  .stat-l {
     font-size: 10px;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--warm-grey);
   }
 
-  /* What you get */
+  /* ── PILLARS ── */
   .section-label {
     font-size: 10px;
-    letter-spacing: .15em;
+    letter-spacing: .16em;
     text-transform: uppercase;
     color: var(--accent-dim);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
   }
-
   .pillars {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
-    background: var(--dim);
-    border: .5px solid var(--dim);
+    background: var(--border);
+    border: .5px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 3.5rem;
+    margin-bottom: 3rem;
   }
-
   .pillar {
-    background: var(--black);
-    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    padding: 1.25rem 1.4rem;
+    transition: background .2s;
   }
+  .pillar:hover { background: var(--surface2); }
+  .pillar-icon { font-size: 1.1rem; display: block; margin-bottom: .55rem; }
+  .pillar-title { font-size: 12px; font-weight: 500; color: var(--off-white); margin-bottom: .35rem; }
+  .pillar-desc { font-size: 11px; color: var(--warm-grey); line-height: 1.65; }
 
-  .pillar-icon {
-    font-size: 1.1rem;
-    margin-bottom: .6rem;
-    display: block;
-  }
-
-  .pillar-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--off-white);
-    margin-bottom: .4rem;
-    letter-spacing: .04em;
-  }
-
-  .pillar-desc {
-    font-size: 11px;
-    color: var(--warm-grey);
-    line-height: 1.6;
-  }
-
-  /* Who this is for */
-  .for-list {
-    list-style: none;
-    margin-bottom: 3.5rem;
-  }
-
+  /* ── FOR LIST ── */
+  .for-list { list-style: none; margin-bottom: 3rem; }
   .for-list li {
     display: flex;
     gap: 1rem;
-    align-items: flex-start;
-    padding: .75rem 0;
-    border-bottom: .5px solid var(--dim);
+    padding: .7rem 0;
+    border-bottom: .5px solid var(--border2);
     font-size: 12px;
     color: var(--warm-grey);
     line-height: 1.6;
   }
-
   .for-list li:last-child { border-bottom: none; }
+  .for-list li::before { content: '—'; color: var(--accent); flex-shrink: 0; }
 
-  .for-list li::before {
-    content: '—';
-    color: var(--accent);
-    flex-shrink: 0;
-    margin-top: .05em;
-  }
-
-  /* Form */
-  .form-section {
-    padding: 2.5rem 0 5rem;
-    border-top: .5px solid var(--dim);
-  }
-
-  .form-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.8rem;
-    font-weight: 400;
-    color: var(--off-white);
-    margin-bottom: .5rem;
-  }
-
-  .form-sub {
-    font-size: 12px;
-    color: var(--warm-grey);
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+  /* ── QUOTE ── */
+  .quote {
+    padding: 2rem 0 2.5rem;
+    border-top: .5px solid var(--border2);
     margin-bottom: 1rem;
   }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: .4rem;
+  .quote-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--off-white);
+    margin-bottom: .75rem;
   }
+  .quote-attr { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--warm-grey); }
 
+  /* ── FORM ── */
+  .form-section {
+    border-top: .5px solid var(--border);
+    padding: 2.5rem 0 5rem;
+  }
+  .form-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: .4rem;
+  }
+  .form-sub { font-size: 12px; color: var(--warm-grey); line-height: 1.7; margin-bottom: 2.25rem; }
+
+  /* Field groups */
+  .fields { display: flex; flex-direction: column; gap: 1.25rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .field { display: flex; flex-direction: column; gap: .4rem; }
   .field.full { grid-column: 1 / -1; }
 
-  label {
+  label.field-label {
     font-size: 10px;
-    letter-spacing: .12em;
+    letter-spacing: .13em;
     text-transform: uppercase;
     color: var(--warm-grey);
   }
 
-  input, select, textarea {
-    background: #111;
-    border: .5px solid var(--dim);
-    border-radius: 5px;
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    background: var(--surface);
+    border: .5px solid var(--border);
+    border-radius: 6px;
     color: var(--off-white);
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     font-weight: 300;
-    padding: .75rem 1rem;
+    padding: .8rem 1rem;
     width: 100%;
     outline: none;
-    transition: border-color .2s;
+    transition: border-color .2s, background .2s;
     -webkit-appearance: none;
     appearance: none;
   }
-
   input:focus, select:focus, textarea:focus {
     border-color: var(--accent);
     background: #141410;
   }
+  input::placeholder, textarea::placeholder { color: var(--dim); }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+  select option { background: #1a1a18; }
+  textarea { resize: vertical; min-height: 110px; }
 
-  input::placeholder, textarea::placeholder {
-    color: var(--dim);
-  }
+  /* ── CUSTOM RADIO BUTTONS ── */
+  .radio-group { display: flex; flex-wrap: wrap; gap: .5rem; }
 
-  select { cursor: pointer; }
-
-  select option { background: #111; }
-
-  textarea { resize: vertical; min-height: 100px; }
-
-  .radio-group {
-    display: flex;
-    gap: .75rem;
-    flex-wrap: wrap;
-  }
-
-  .radio-option {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    cursor: pointer;
-  }
-
+  .radio-option { position: relative; }
   .radio-option input[type="radio"] {
-    width: 14px;
-    height: 14px;
-    accent-color: var(--accent);
-    flex-shrink: 0;
-    padding: 0;
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
   }
-
-  .radio-option span {
+  .radio-option .radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .55rem 1rem;
+    background: var(--surface);
+    border: .5px solid var(--border);
+    border-radius: 20px;
     font-size: 11px;
     color: var(--warm-grey);
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .radio-option .radio-label::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--dim);
+    background: transparent;
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+  .radio-option input[type="radio"]:checked + .radio-label {
+    background: #1f1d14;
+    border-color: var(--accent);
+    color: var(--off-white);
+  }
+  .radio-option input[type="radio"]:checked + .radio-label::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .radio-option .radio-label:hover {
+    border-color: var(--accent-dim);
+    color: var(--off-white);
   }
 
+  /* ── SUBMIT ── */
+  .submit-wrap { margin-top: 1.75rem; }
   .submit-btn {
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     background: var(--accent);
     color: var(--black);
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: .12em;
+    letter-spacing: .14em;
     text-transform: uppercase;
     cursor: pointer;
-    margin-top: 1.5rem;
-    transition: background .2s, transform .1s;
+    transition: background .2s, transform .1s, opacity .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
   }
+  .submit-btn:hover:not(:disabled) { background: var(--accent-hover); }
+  .submit-btn:active:not(:disabled) { transform: scale(.99); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
 
-  .submit-btn:hover { background: #d4b87a; }
-  .submit-btn:active { transform: scale(.99); }
-
-  .form-note {
-    font-size: 10px;
-    color: #444;
-    text-align: center;
-    margin-top: .75rem;
-    line-height: 1.6;
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,0,0,.3);
+    border-top-color: var(--black);
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    display: none;
   }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Success state */
-  .success {
+  .form-note { font-size: 10px; color: #444; text-align: center; margin-top: .75rem; line-height: 1.6; }
+
+  /* Field error state */
+  .field-error { border-color: var(--error) !important; }
+  .error-msg { font-size: 10px; color: var(--error); margin-top: .3rem; display: none; }
+  .error-msg.show { display: block; }
+
+  /* ── SUCCESS STATE ── */
+  #successState {
     display: none;
     text-align: center;
-    padding: 3rem 0;
+    padding: 4rem 0;
+    animation: fadeUp .5s ease both;
   }
-
-  .success-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .success h3 {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--off-white);
-    margin-bottom: .75rem;
-  }
-
-  .success p {
-    font-size: 12px;
-    color: var(--warm-grey);
-    line-height: 1.8;
-  }
-
-  /* Divider */
-  .divider {
-    height: .5px;
-    background: var(--dim);
-    margin: 3rem 0;
-  }
-
-  /* Quote */
-  .quote {
-    padding: 2rem 0;
-    margin-bottom: 1rem;
-  }
-
-  .quote-text {
-    font-family: 'Instrument Serif', serif;
+  .success-check {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(74,158,110,.12);
+    border: 1px solid rgba(74,158,110,.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
     font-size: 1.3rem;
-    font-style: italic;
-    color: var(--off-white);
-    line-height: 1.5;
-    margin-bottom: .75rem;
   }
-
-  .quote-attr {
-    font-size: 10px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--warm-grey);
+  #successState h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: .6rem;
   }
+  #successState p { font-size: 12px; color: var(--warm-grey); line-height: 1.8; }
 
-  /* Footer */
+  /* ── FOOTER ── */
   footer {
-    border-top: .5px solid var(--dim);
+    border-top: .5px solid var(--border);
     padding: 1.5rem 0 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-
-  footer span {
-    font-size: 10px;
-    color: #444;
-    letter-spacing: .06em;
-  }
-
-  footer a {
-    font-size: 10px;
-    color: var(--warm-grey);
-    text-decoration: none;
-    letter-spacing: .08em;
-    transition: color .2s;
-  }
-
+  footer span { font-size: 10px; color: #383430; }
+  footer a { font-size: 10px; color: var(--warm-grey); text-decoration: none; letter-spacing: .06em; transition: color .2s; }
   footer a:hover { color: var(--off-white); }
 
-  /* Animations */
+  /* ── ANIMATIONS ── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  .hero { animation: fadeUp .5s ease both; }
+  .stats { animation: fadeUp .5s .08s ease both; }
+  .pillars { animation: fadeUp .5s .14s ease both; }
+  .for-list { animation: fadeUp .5s .18s ease both; }
+  .quote { animation: fadeUp .5s .22s ease both; }
+  .form-section { animation: fadeUp .5s .26s ease both; }
 
-  .hero, .stats, .pillars, .for-list, .form-section {
-    animation: fadeUp .6s ease both;
-  }
-
-  .stats { animation-delay: .1s; }
-  .pillars { animation-delay: .15s; }
-  .for-list { animation-delay: .2s; }
-  .form-section { animation-delay: .25s; }
-
-  @media (max-width: 520px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .stats { gap: 1.5rem; }
+  @media (max-width: 500px) {
+    h1 { font-size: 2.4rem; }
     .pillars { grid-template-columns: 1fr; }
-    h1 { font-size: 2.2rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: .5px solid var(--border); }
+    .stat:last-child { border-bottom: none; }
   }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-
-  <header>
-    <a href="https://instagram.com/viivnmusic" class="logo">Viiv<span>n</span></a>
-    <a href="https://linktr.ee/viivnmusic" class="back-link">← Back</a>
-  </header>
+  <nav>
+    <a href="https://instagram.com/viivnmusic" class="logo">Viiv<em>n</em></a>
+    <a href="https://linktr.ee/viivnmusic" class="back">← Back</a>
+  </nav>
 
   <section class="hero">
     <div class="eyebrow">DJ Lessons &amp; 1-on-1 Coaching</div>
     <h1>Learn to DJ<br>the <em>right</em> way.</h1>
-    <p class="hero-sub">Vinyl roots. Hybrid technique. Underground music theory. No shortcuts, no screen dependency. 16 years of experience in the underground house &amp; techno scene — taught directly to you.</p>
+    <p class="hero-body">Vinyl roots. Hybrid technique. Underground music theory. No shortcuts, no screen dependency. 16 years of experience in house &amp; techno — taught directly to you.</p>
   </section>
 
   <div class="stats">
-    <div>
-      <div class="stat-num">200+</div>
-      <div class="stat-label">Students taught</div>
-    </div>
-    <div>
-      <div class="stat-num">16</div>
-      <div class="stat-label">Years in the underground</div>
-    </div>
-    <div>
-      <div class="stat-num">1-on-1</div>
-      <div class="stat-label">Always personal</div>
-    </div>
+    <div class="stat"><div class="stat-n">200+</div><div class="stat-l">Students taught</div></div>
+    <div class="stat"><div class="stat-n">16</div><div class="stat-l">Years underground</div></div>
+    <div class="stat"><div class="stat-n">1-on-1</div><div class="stat-l">Always personal</div></div>
   </div>
 
   <div class="section-label">What you'll learn</div>
   <div class="pillars">
-    <div class="pillar">
-      <span class="pillar-icon">🎧</span>
-      <div class="pillar-title">Ear training first</div>
-      <div class="pillar-desc">Beatmatching, phrase awareness, harmonic mixing — by ear, not by screen.</div>
-    </div>
-    <div class="pillar">
-      <span class="pillar-icon">🎚️</span>
-      <div class="pillar-title">Hybrid technique</div>
-      <div class="pillar-desc">Vinyl roots applied to modern CDJ and controller setups. The best of both worlds.</div>
-    </div>
-    <div class="pillar">
-      <span class="pillar-icon">🎵</span>
-      <div class="pillar-title">Music selection</div>
-      <div class="pillar-desc">How to build a journey — energy, tension, release. Not just mixing, but storytelling.</div>
-    </div>
-    <div class="pillar">
-      <span class="pillar-icon">🔊</span>
-      <div class="pillar-title">Playing live</div>
-      <div class="pillar-desc">Reading a crowd, adapting in real-time, and performing under pressure. The unwritten art.</div>
-    </div>
+    <div class="pillar"><span class="pillar-icon">🎧</span><div class="pillar-title">Ear training first</div><div class="pillar-desc">Beatmatching, phrase awareness, harmonic mixing — by ear, not by screen.</div></div>
+    <div class="pillar"><span class="pillar-icon">🎚️</span><div class="pillar-title">Hybrid technique</div><div class="pillar-desc">Vinyl roots applied to modern CDJ and controller setups.</div></div>
+    <div class="pillar"><span class="pillar-icon">🎵</span><div class="pillar-title">Music selection</div><div class="pillar-desc">How to build a journey — energy, tension, release. Storytelling through records.</div></div>
+    <div class="pillar"><span class="pillar-icon">🔊</span><div class="pillar-title">Playing live</div><div class="pillar-desc">Reading a crowd, adapting in real-time, performing under pressure.</div></div>
   </div>
 
   <div class="section-label">Who this is for</div>
@@ -494,150 +423,235 @@
     <li>Complete beginners who want to build proper foundations from day one</li>
     <li>Self-taught DJs who've plateaued and want to understand the why behind the how</li>
     <li>Producers who want to translate their music into live performance</li>
-    <li>Anyone serious about house and techno — not just DJing, but understanding the culture behind it</li>
-    <li>People who want to learn technique that will last, not shortcuts that won't</li>
+    <li>Anyone serious about house and techno — not just DJing, but the culture behind it</li>
+    <li>People who want technique that lasts, not shortcuts that won't</li>
   </ul>
 
   <div class="quote">
     <div class="quote-text">"The goal isn't to make you sound like everyone else. It's to make you sound like yourself — with the craft to back it up."</div>
-    <div class="quote-attr">— Vivien, @viivnmusic</div>
+    <div class="quote-attr">— Vivien · @viivnmusic</div>
   </div>
-
-  <div class="divider"></div>
 
   <section class="form-section" id="enquire">
     <div class="form-title">Get in touch</div>
-    <p class="form-sub">Fill in the form below and I'll get back to you within 48 hours to discuss availability and next steps.</p>
+    <p class="form-sub">Fill in the form and I'll get back to you within 48 hours to discuss availability and next steps.</p>
 
-    <div id="formWrap">
-      <div class="form-grid">
-        <div class="field">
-          <label for="name">Your name</label>
-          <input type="text" id="name" placeholder="First name" autocomplete="off">
-        </div>
-        <div class="field">
-          <label for="email">Email address</label>
-          <input type="email" id="email" placeholder="you@email.com" autocomplete="off">
-        </div>
-        <div class="field full">
-          <label>Your experience level</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="level" value="complete_beginner">
-              <span>Complete beginner</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="level" value="some_experience">
-              <span>Some experience</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="level" value="intermediate">
-              <span>Intermediate</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="level" value="advanced">
-              <span>Advanced</span>
-            </label>
+    <form id="lessonForm" novalidate>
+      <div class="fields">
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="First name" autocomplete="off">
+            <span class="error-msg" id="err-name">Please enter your name</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="off">
+            <span class="error-msg" id="err-email">Please enter a valid email</span>
           </div>
         </div>
-        <div class="field full">
-          <label for="gear">What gear do you have or want to learn on?</label>
-          <input type="text" id="gear" placeholder="e.g. CDJ-2000s, Pioneer controller, Traktor, no gear yet..." autocomplete="off">
+
+        <div class="field">
+          <label class="field-label">Experience level</label>
+          <div class="radio-group" id="levelGroup">
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Complete beginner">
+              <span class="radio-label">Complete beginner</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Some experience">
+              <span class="radio-label">Some experience</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Intermediate">
+              <span class="radio-label">Intermediate</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Advanced">
+              <span class="radio-label">Advanced</span>
+            </label>
+          </div>
+          <span class="error-msg" id="err-level">Please select your experience level</span>
         </div>
-        <div class="field full">
-          <label for="goals">What do you want to get out of lessons?</label>
-          <textarea id="goals" placeholder="Tell me what you're working toward — a specific skill, playing your first gig, understanding music theory, whatever it is..."></textarea>
+
+        <div class="field">
+          <label class="field-label" for="gear">What gear do you have or want to learn on?</label>
+          <input type="text" id="gear" name="gear" placeholder="e.g. CDJ-2000s, Pioneer controller, Traktor, no gear yet…" autocomplete="off">
         </div>
-        <div class="field full">
-          <label for="availability">When are you generally available?</label>
-          <select id="availability">
-            <option value="" disabled selected>Select a preference</option>
-            <option value="weekday_morning">Weekday mornings</option>
-            <option value="weekday_afternoon">Weekday afternoons</option>
-            <option value="weekday_evening">Weekday evenings</option>
-            <option value="weekend_morning">Weekend mornings</option>
-            <option value="weekend_afternoon">Weekend afternoons</option>
-            <option value="flexible">Flexible</option>
-          </select>
+
+        <div class="field">
+          <label class="field-label" for="goals">What do you want to get out of lessons?</label>
+          <textarea id="goals" name="goals" placeholder="Tell me what you're working toward — a specific skill, your first gig, music theory, whatever it is…"></textarea>
+          <span class="error-msg" id="err-goals">Please tell me what you're hoping to achieve</span>
         </div>
-        <div class="field full">
-          <label for="howFound">How did you find me?</label>
-          <select id="howFound">
-            <option value="" disabled selected>Select one</option>
-            <option value="instagram">Instagram</option>
-            <option value="recommendation">Word of mouth / recommendation</option>
-            <option value="soundcloud">SoundCloud</option>
-            <option value="saw_you_play">Saw you play live</option>
-            <option value="other">Other</option>
-          </select>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="availability">When are you generally available?</label>
+            <select id="availability" name="availability">
+              <option value="" disabled selected>Select a preference</option>
+              <option>Weekday mornings</option>
+              <option>Weekday afternoons</option>
+              <option>Weekday evenings</option>
+              <option>Weekend mornings</option>
+              <option>Weekend afternoons</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="howFound">How did you find me?</label>
+            <select id="howFound" name="how_found">
+              <option value="" disabled selected>Select one</option>
+              <option>Instagram</option>
+              <option>Word of mouth</option>
+              <option>SoundCloud</option>
+              <option>Saw you play live</option>
+              <option>Other</option>
+            </select>
+          </div>
         </div>
+
       </div>
 
-      <button class="submit-btn" onclick="handleSubmit()">Send enquiry →</button>
-      <p class="form-note">I'll reply within 48 hours. All lessons are 1-on-1 and tailored to your level and goals.</p>
-    </div>
+      <div class="submit-wrap">
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">Send enquiry →</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+        <p class="form-note">I'll reply within 48 hours. All lessons are 1-on-1 and tailored to your level and goals.</p>
+      </div>
+    </form>
 
-    <div class="success" id="successMsg">
-      <div class="success-icon">✓</div>
+    <div id="successState">
+      <div class="success-check">✓</div>
       <h3>Enquiry received.</h3>
-      <p>Thanks for reaching out. I'll be in touch within 48 hours<br>to discuss next steps and availability.</p>
+      <p>Thanks for reaching out — I'll be in touch<br>within 48 hours to discuss next steps.</p>
     </div>
   </section>
 
   <footer>
-    <span>© Viivn 2025 · Naarm / Melbourne</span>
-    <a href="https://instagram.com/viivnmusic" target="_blank">@viivnmusic</a>
+    <span>© Viivn 2026 · Naarm / Melbourne</span>
+    <a href="https://instagram.com/viivnmusic" target="_blank">@viivnmusic ↗</a>
   </footer>
 
 </div>
 
 <script>
-function handleSubmit() {
-  const name = document.getElementById('name').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const level = document.querySelector('input[name="level"]:checked')?.value;
-  const goals = document.getElementById('goals').value.trim();
+  // ── FORM SUBMISSION via Formspree ──
+  // Replace YOUR_FORM_ID below with your actual Formspree form ID
+  // Get it free at formspree.io → New Form → copy the ID from the endpoint URL
+  const FORMSPREE_ID = 'YOUR_FORM_ID';
 
-  if (!name || !email || !level || !goals) {
-    const missing = [];
-    if (!name) missing.push('name');
-    if (!email) missing.push('email');
-    if (!level) missing.push('experience level');
-    if (!goals) missing.push('goals');
-    alert('Please fill in: ' + missing.join(', '));
-    return;
+  const form = document.getElementById('lessonForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const spinner = document.getElementById('spinner');
+
+  function showError(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show', show);
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Please enter a valid email address');
-    return;
+  function markField(id, hasError) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('field-error', hasError);
   }
 
-  // Build mailto with all form data
-  const gear = document.getElementById('gear').value.trim();
-  const availability = document.getElementById('availability').value;
-  const howFound = document.getElementById('howFound').value;
+  function validateForm() {
+    let valid = true;
 
-  const subject = encodeURIComponent(`DJ Lesson Enquiry — ${name}`);
-  const body = encodeURIComponent(
-    `Name: ${name}\n` +
-    `Email: ${email}\n` +
-    `Experience level: ${level.replace('_', ' ')}\n` +
-    `Gear: ${gear || 'Not specified'}\n` +
-    `Availability: ${availability.replace('_', ' ') || 'Not specified'}\n` +
-    `How they found you: ${howFound || 'Not specified'}\n\n` +
-    `Goals:\n${goals}`
-  );
+    const name = document.getElementById('name').value.trim();
+    const nameErr = !name;
+    markField('name', nameErr);
+    showError('err-name', nameErr);
+    if (nameErr) valid = false;
 
-  window.location.href = `mailto:eleventhtideagency@gmail.com?subject=${subject}&body=${body}`;
+    const email = document.getElementById('email').value.trim();
+    const emailErr = !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    markField('email', emailErr);
+    showError('err-email', emailErr);
+    if (emailErr) valid = false;
 
-  // Show success
-  setTimeout(() => {
-    document.getElementById('formWrap').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-  }, 500);
-}
+    const level = document.querySelector('input[name="experience_level"]:checked');
+    const levelErr = !level;
+    showError('err-level', levelErr);
+    // Highlight all radio labels if none selected
+    document.querySelectorAll('.radio-option .radio-label').forEach(l => {
+      l.style.borderColor = levelErr ? 'var(--error)' : '';
+    });
+    if (levelErr) valid = false;
+
+    const goals = document.getElementById('goals').value.trim();
+    const goalsErr = !goals;
+    markField('goals', goalsErr);
+    showError('err-goals', goalsErr);
+    if (goalsErr) valid = false;
+
+    return valid;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    // Loading state
+    submitBtn.disabled = true;
+    btnText.textContent = 'Sending…';
+    spinner.style.display = 'block';
+
+    const data = {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      experience_level: document.querySelector('input[name="experience_level"]:checked')?.value,
+      gear: document.getElementById('gear').value.trim() || 'Not specified',
+      goals: document.getElementById('goals').value.trim(),
+      availability: document.getElementById('availability').value || 'Not specified',
+      how_found: document.getElementById('howFound').value || 'Not specified',
+    };
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('enquire').offsetTop - 40, behavior: 'smooth' });
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      // Fallback: open pre-filled email
+      const subject = encodeURIComponent(`DJ Lesson Enquiry — ${data.name}`);
+      const body = encodeURIComponent(
+        `Name: ${data.name}\nEmail: ${data.email}\nLevel: ${data.experience_level}\nGear: ${data.gear}\nAvailability: ${data.availability}\nHow found: ${data.how_found}\n\nGoals:\n${data.goals}`
+      );
+      window.location.href = `mailto:eleventhtideagency@gmail.com?subject=${subject}&body=${body}`;
+
+      submitBtn.disabled = false;
+      btnText.textContent = 'Send enquiry →';
+      spinner.style.display = 'none';
+    }
+  });
+
+  // Clear errors on input
+  ['name','email','goals'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      markField(id, false);
+      showError('err-' + id, false);
+    });
+  });
+
+  document.querySelectorAll('input[name="experience_level"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      showError('err-level', false);
+      document.querySelectorAll('.radio-option .radio-label').forEach(l => l.style.borderColor = '');
+    });
+  });
 </script>
-
 </body>
 </html>
