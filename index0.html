@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Lessons — Viivn</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --surface: #111110;
+    --surface2: #171614;
+    --border: #252320;
+    --border2: #1e1c1a;
+    --off-white: #e8e3d8;
+    --warm-grey: #8a857a;
+    --dim: #3a3630;
+    --accent: #c8a96e;
+    --accent-hover: #d4b87a;
+    --accent-dim: #6a5830;
+    --success: #4a9e6e;
+    --error: #c05050;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .wrap { max-width: 620px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ── NAV ── */
+  nav {
+    padding: 2rem 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.15rem;
+    color: var(--off-white);
+    text-decoration: none;
+    letter-spacing: .01em;
+  }
+  .logo em { font-style: italic; color: var(--accent); }
+  .back {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .back:hover { color: var(--off-white); }
+
+  /* ── HERO ── */
+  .hero { padding: 4rem 0 2.5rem; }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.6rem, 7vw, 4rem);
+    font-weight: 400;
+    line-height: 1.0;
+    margin-bottom: 1.5rem;
+    letter-spacing: -.01em;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .hero-body {
+    font-size: 12px;
+    color: var(--warm-grey);
+    line-height: 1.85;
+    max-width: 500px;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: .5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 2.5rem 0;
+  }
+  .stat {
+    padding: 1.25rem 1.5rem;
+    border-right: .5px solid var(--border);
+    background: var(--surface);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-n {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--off-white);
+    margin-bottom: .25rem;
+  }
+  .stat-l {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+  }
+
+  /* ── PILLARS ── */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 1rem;
+  }
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: .5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .pillar {
+    background: var(--surface);
+    padding: 1.25rem 1.4rem;
+    transition: background .2s;
+  }
+  .pillar:hover { background: var(--surface2); }
+  .pillar-icon { font-size: 1.1rem; display: block; margin-bottom: .55rem; }
+  .pillar-title { font-size: 12px; font-weight: 500; color: var(--off-white); margin-bottom: .35rem; }
+  .pillar-desc { font-size: 11px; color: var(--warm-grey); line-height: 1.65; }
+
+  /* ── FOR LIST ── */
+  .for-list { list-style: none; margin-bottom: 3rem; }
+  .for-list li {
+    display: flex;
+    gap: 1rem;
+    padding: .7rem 0;
+    border-bottom: .5px solid var(--border2);
+    font-size: 12px;
+    color: var(--warm-grey);
+    line-height: 1.6;
+  }
+  .for-list li:last-child { border-bottom: none; }
+  .for-list li::before { content: '—'; color: var(--accent); flex-shrink: 0; }
+
+  /* ── QUOTE ── */
+  .quote {
+    padding: 2rem 0 2.5rem;
+    border-top: .5px solid var(--border2);
+    margin-bottom: 1rem;
+  }
+  .quote-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--off-white);
+    margin-bottom: .75rem;
+  }
+  .quote-attr { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--warm-grey); }
+
+  /* ── BOOK NOW ── */
+  .book-section {
+    border-top: .5px solid var(--border);
+    padding: 2.5rem 0 2.5rem;
+  }
+  .book-label {
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .5rem;
+  }
+  .book-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: .4rem;
+  }
+  .book-sub {
+    font-size: 12px;
+    color: var(--warm-grey);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  .pricing-stack {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+  .pricing-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    border: .5px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    text-decoration: none;
+    color: var(--off-white);
+    transition: border-color .2s, background .2s;
+    position: relative;
+  }
+  .pricing-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+  }
+  .pricing-card.featured {
+    border-color: var(--accent-dim);
+  }
+  .pricing-card.featured:hover {
+    border-color: var(--accent);
+  }
+  .pricing-badge {
+    position: absolute;
+    top: -9px;
+    left: 1.25rem;
+    background: var(--accent);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .pricing-card-left {}
+  .pricing-card-name {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    margin-bottom: .25rem;
+  }
+  .pricing-card-desc {
+    font-size: 11px;
+    color: var(--warm-grey);
+  }
+  .pricing-card-right {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-shrink: 0;
+  }
+  .pricing-card-price {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .pricing-card-arrow {
+    font-size: 14px;
+    color: var(--dim);
+    transition: color .2s, transform .2s;
+  }
+  .pricing-card:hover .pricing-card-arrow {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+  .book-note {
+    margin-top: 1.25rem;
+    font-size: 11px;
+    color: var(--dim);
+    line-height: 1.7;
+  }
+  .book-note a {
+    color: var(--warm-grey);
+    text-decoration: none;
+    border-bottom: .5px solid var(--border);
+    transition: color .2s;
+  }
+  .book-note a:hover { color: var(--accent); }
+
+  /* ── FORM ── */
+  .form-section {
+    border-top: .5px solid var(--border);
+    padding: 2.5rem 0 5rem;
+  }
+  .form-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: .4rem;
+  }
+  .form-sub { font-size: 12px; color: var(--warm-grey); line-height: 1.7; margin-bottom: 2.25rem; }
+
+  /* Field groups */
+  .fields { display: flex; flex-direction: column; gap: 1.25rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .field { display: flex; flex-direction: column; gap: .4rem; }
+  .field.full { grid-column: 1 / -1; }
+
+  label.field-label {
+    font-size: 10px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    background: var(--surface);
+    border: .5px solid var(--border);
+    border-radius: 6px;
+    color: var(--off-white);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 300;
+    padding: .8rem 1rem;
+    width: 100%;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: #141410;
+  }
+  input::placeholder, textarea::placeholder { color: var(--dim); }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+  select option { background: #1a1a18; }
+  textarea { resize: vertical; min-height: 110px; }
+
+  /* ── CUSTOM RADIO BUTTONS ── */
+  .radio-group { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+  .radio-option { position: relative; }
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .radio-option .radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .55rem 1rem;
+    background: var(--surface);
+    border: .5px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--warm-grey);
+    cursor: pointer;
+    transition: all .15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .radio-option .radio-label::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--dim);
+    background: transparent;
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+  .radio-option input[type="radio"]:checked + .radio-label {
+    background: #1f1d14;
+    border-color: var(--accent);
+    color: var(--off-white);
+  }
+  .radio-option input[type="radio"]:checked + .radio-label::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .radio-option .radio-label:hover {
+    border-color: var(--accent-dim);
+    color: var(--off-white);
+  }
+
+  /* ── SUBMIT ── */
+  .submit-wrap { margin-top: 1.75rem; }
+  .submit-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s, transform .1s, opacity .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+  }
+  .submit-btn:hover:not(:disabled) { background: var(--accent-hover); }
+  .submit-btn:active:not(:disabled) { transform: scale(.99); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,0,0,.3);
+    border-top-color: var(--black);
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .form-note { font-size: 10px; color: #444; text-align: center; margin-top: .75rem; line-height: 1.6; }
+
+  /* Field error state */
+  .field-error { border-color: var(--error) !important; }
+  .error-msg { font-size: 10px; color: var(--error); margin-top: .3rem; display: none; }
+  .error-msg.show { display: block; }
+
+  /* ── SUCCESS STATE ── */
+  #successState {
+    display: none;
+    text-align: center;
+    padding: 4rem 0;
+    animation: fadeUp .5s ease both;
+  }
+  .success-check {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(74,158,110,.12);
+    border: 1px solid rgba(74,158,110,.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 1.3rem;
+  }
+  #successState h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: .6rem;
+  }
+  #successState p { font-size: 12px; color: var(--warm-grey); line-height: 1.8; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: .5px solid var(--border);
+    padding: 1.5rem 0 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span { font-size: 10px; color: #383430; }
+  footer a { font-size: 10px; color: var(--warm-grey); text-decoration: none; letter-spacing: .06em; transition: color .2s; }
+  footer a:hover { color: var(--off-white); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero { animation: fadeUp .5s ease both; }
+  .stats { animation: fadeUp .5s .08s ease both; }
+  .pillars { animation: fadeUp .5s .14s ease both; }
+  .for-list { animation: fadeUp .5s .18s ease both; }
+  .quote { animation: fadeUp .5s .22s ease both; }
+  .book-section { animation: fadeUp .5s .26s ease both; }
+  .form-section { animation: fadeUp .5s .30s ease both; }
+
+  @media (max-width: 500px) {
+    h1 { font-size: 2.4rem; }
+    .pillars { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: .5px solid var(--border); }
+    .stat:last-child { border-bottom: none; }
+    .pricing-card-price { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a href="https://instagram.com/viivnmusic" class="logo">Viiv<em>n</em></a>
+    <a href="https://linktr.ee/viivnmusic" class="back">← Back</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow">DJ Lessons &amp; 1-on-1 Coaching</div>
+    <h1>Learn to DJ<br>the <em>right</em> way.</h1>
+    <p class="hero-body">Vinyl roots. Hybrid technique. Underground music theory. No shortcuts, no screen dependency. 16 years of experience in house &amp; techno — taught directly to you.</p>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">200+</div><div class="stat-l">Students taught</div></div>
+    <div class="stat"><div class="stat-n">16</div><div class="stat-l">Years underground</div></div>
+    <div class="stat"><div class="stat-n">1-on-1</div><div class="stat-l">Always personal</div></div>
+  </div>
+
+  <div class="section-label">What you'll learn</div>
+  <div class="pillars">
+    <div class="pillar"><span class="pillar-icon">🎧</span><div class="pillar-title">Ear training first</div><div class="pillar-desc">Beatmatching, phrase awareness, harmonic mixing — by ear, not by screen.</div></div>
+    <div class="pillar"><span class="pillar-icon">🎚️</span><div class="pillar-title">Hybrid technique</div><div class="pillar-desc">Vinyl roots applied to modern CDJ and controller setups.</div></div>
+    <div class="pillar"><span class="pillar-icon">🎵</span><div class="pillar-title">Music selection</div><div class="pillar-desc">How to build a journey — energy, tension, release. Storytelling through records.</div></div>
+    <div class="pillar"><span class="pillar-icon">🔊</span><div class="pillar-title">Playing live</div><div class="pillar-desc">Reading a crowd, adapting in real-time, performing under pressure.</div></div>
+  </div>
+
+  <div class="section-label">Who this is for</div>
+  <ul class="for-list">
+    <li>Complete beginners who want to build proper foundations from day one</li>
+    <li>Self-taught DJs who've plateaued and want to understand the why behind the how</li>
+    <li>Producers who want to translate their music into live performance</li>
+    <li>Anyone serious about house and techno — not just DJing, but the culture behind it</li>
+    <li>People who want technique that lasts, not shortcuts that won't</li>
+  </ul>
+
+  <div class="quote">
+    <div class="quote-text">"The goal isn't to make you sound like everyone else. It's to make you sound like yourself — with the craft to back it up."</div>
+    <div class="quote-attr">— Vivien · @viivnmusic</div>
+  </div>
+
+  <!-- BOOK NOW -->
+  <section class="book-section" id="book">
+    <div class="book-label">Already know what you want?</div>
+    <div class="book-title">Book directly.</div>
+    <p class="book-sub">No back and forth. Pick your session type and pay securely via Stripe. I'll be in touch within 48 hours to lock in a time.</p>
+
+    <div class="pricing-stack">
+
+      <a href="https://buy.stripe.com/00w3cv99g0ht6DW3Gw3AY03" target="_blank" class="pricing-card">
+        <div class="pricing-card-left">
+          <div class="pricing-card-name">Single Session</div>
+          <div class="pricing-card-desc">1 × 1-hour lesson — try it out</div>
+        </div>
+        <div class="pricing-card-right">
+          <div class="pricing-card-price">A$100</div>
+          <div class="pricing-card-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="https://buy.stripe.com/cNi4gzgBIggr3rK90Q3AY04" target="_blank" class="pricing-card featured">
+        <div class="pricing-badge">Most popular</div>
+        <div class="pricing-card-left">
+          <div class="pricing-card-name">Block of 4</div>
+          <div class="pricing-card-desc">4 × 1-hour lessons — save $60</div>
+        </div>
+        <div class="pricing-card-right">
+          <div class="pricing-card-price">A$340</div>
+          <div class="pricing-card-arrow">→</div>
+        </div>
+      </a>
+
+      <a href="https://buy.stripe.com/4gMcN5bhoaW7bYg3Gw3AY05" target="_blank" class="pricing-card">
+        <div class="pricing-card-left">
+          <div class="pricing-card-name">Block of 6</div>
+          <div class="pricing-card-desc">6 × 1-hour lessons — save $132</div>
+        </div>
+        <div class="pricing-card-right">
+          <div class="pricing-card-price">A$468</div>
+          <div class="pricing-card-arrow">→</div>
+        </div>
+      </a>
+
+    </div>
+
+    <p class="book-note">Not sure which to pick? <a href="#enquire">Send an enquiry below</a> and I'll help you figure it out.</p>
+  </section>
+  <!-- END BOOK NOW -->
+
+  <section class="form-section" id="enquire">
+    <div class="form-title">Get in touch</div>
+    <p class="form-sub">Fill in the form and I'll get back to you within 48 hours to discuss availability and next steps.</p>
+
+    <form id="lessonForm" novalidate>
+      <div class="fields">
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="First name" autocomplete="off">
+            <span class="error-msg" id="err-name">Please enter your name</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="off">
+            <span class="error-msg" id="err-email">Please enter a valid email</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Experience level</label>
+          <div class="radio-group" id="levelGroup">
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Complete beginner">
+              <span class="radio-label">Complete beginner</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Some experience">
+              <span class="radio-label">Some experience</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Intermediate">
+              <span class="radio-label">Intermediate</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="experience_level" value="Advanced">
+              <span class="radio-label">Advanced</span>
+            </label>
+          </div>
+          <span class="error-msg" id="err-level">Please select your experience level</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="gear">What gear do you have or want to learn on?</label>
+          <input type="text" id="gear" name="gear" placeholder="e.g. CDJ-2000s, Pioneer controller, Traktor, no gear yet…" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="goals">What do you want to get out of lessons?</label>
+          <textarea id="goals" name="goals" placeholder="Tell me what you're working toward — a specific skill, your first gig, music theory, whatever it is…"></textarea>
+          <span class="error-msg" id="err-goals">Please tell me what you're hoping to achieve</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label" for="availability">When are you generally available?</label>
+            <select id="availability" name="availability">
+              <option value="" disabled selected>Select a preference</option>
+              <option>Weekday mornings</option>
+              <option>Weekday afternoons</option>
+              <option>Weekday evenings</option>
+              <option>Weekend mornings</option>
+              <option>Weekend afternoons</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="howFound">How did you find me?</label>
+            <select id="howFound" name="how_found">
+              <option value="" disabled selected>Select one</option>
+              <option>Instagram</option>
+              <option>Word of mouth</option>
+              <option>SoundCloud</option>
+              <option>Saw you play live</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span id="btnText">Send enquiry →</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+        <p class="form-note">I'll reply within 48 hours. All lessons are 1-on-1 and tailored to your level and goals.</p>
+      </div>
+    </form>
+
+    <div id="successState">
+      <div class="success-check">✓</div>
+      <h3>Enquiry received.</h3>
+      <p>Thanks for reaching out — I'll be in touch<br>within 48 hours to discuss next steps.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Viivn 2026 · Naarm / Melbourne</span>
+    <a href="https://instagram.com/viivnmusic" target="_blank">@viivnmusic ↗</a>
+  </footer>
+
+</div>
+
+<script>
+  // ── FORM SUBMISSION via Formspree ──
+  // Replace YOUR_FORM_ID below with your actual Formspree form ID
+  // Get it free at formspree.io → New Form → copy the ID from the endpoint URL
+  const FORMSPREE_ID = 'YOUR_FORM_ID';
+
+  const form = document.getElementById('lessonForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const spinner = document.getElementById('spinner');
+
+  function showError(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show', show);
+  }
+
+  function markField(id, hasError) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('field-error', hasError);
+  }
+
+  function validateForm() {
+    let valid = true;
+
+    const name = document.getElementById('name').value.trim();
+    const nameErr = !name;
+    markField('name', nameErr);
+    showError('err-name', nameErr);
+    if (nameErr) valid = false;
+
+    const email = document.getElementById('email').value.trim();
+    const emailErr = !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    markField('email', emailErr);
+    showError('err-email', emailErr);
+    if (emailErr) valid = false;
+
+    const level = document.querySelector('input[name="experience_level"]:checked');
+    const levelErr = !level;
+    showError('err-level', levelErr);
+    // Highlight all radio labels if none selected
+    document.querySelectorAll('.radio-option .radio-label').forEach(l => {
+      l.style.borderColor = levelErr ? 'var(--error)' : '';
+    });
+    if (levelErr) valid = false;
+
+    const goals = document.getElementById('goals').value.trim();
+    const goalsErr = !goals;
+    markField('goals', goalsErr);
+    showError('err-goals', goalsErr);
+    if (goalsErr) valid = false;
+
+    return valid;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    // Loading state
+    submitBtn.disabled = true;
+    btnText.textContent = 'Sending…';
+    spinner.style.display = 'block';
+
+    const data = {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      experience_level: document.querySelector('input[name="experience_level"]:checked')?.value,
+      gear: document.getElementById('gear').value.trim() || 'Not specified',
+      goals: document.getElementById('goals').value.trim(),
+      availability: document.getElementById('availability').value || 'Not specified',
+      how_found: document.getElementById('howFound').value || 'Not specified',
+    };
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('enquire').offsetTop - 40, behavior: 'smooth' });
+      } else {
+        throw new Error('Server error');
+      }
+    } catch {
+      // Fallback: open pre-filled email
+      const subject = encodeURIComponent(`DJ Lesson Enquiry — ${data.name}`);
+      const body = encodeURIComponent(
+        `Name: ${data.name}\nEmail: ${data.email}\nLevel: ${data.experience_level}\nGear: ${data.gear}\nAvailability: ${data.availability}\nHow found: ${data.how_found}\n\nGoals:\n${data.goals}`
+      );
+      window.location.href = `mailto:eleventhtideagency@gmail.com?subject=${subject}&body=${body}`;
+
+      submitBtn.disabled = false;
+      btnText.textContent = 'Send enquiry →';
+      spinner.style.display = 'none';
+    }
+  });
+
+  // Clear errors on input
+  ['name','email','goals'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      markField(id, false);
+      showError('err-' + id, false);
+    });
+  });
+
+  document.querySelectorAll('input[name="experience_level"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      showError('err-level', false);
+      document.querySelectorAll('.radio-option .radio-label').forEach(l => l.style.borderColor = '');
+    });
+  });
+</script>
+</body>
+</html>
